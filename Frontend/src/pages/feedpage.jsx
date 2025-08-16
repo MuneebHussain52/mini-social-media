@@ -54,17 +54,11 @@ export default function FeedPage() {
     }
   };
 
-  const toggleComments = async (postId) => {
-    try {
-      if (visibleComments[postId]) {
-        setVisibleComments((prev) => ({ ...prev, [postId]: null }));
-        return;
-      }
-      const res = await axios.get(`${API_BASE}/getpostcomment/${postId}`);
-      setVisibleComments((prev) => ({ ...prev, [postId]: res.data }));
-    } catch (err) {
-      console.error("Error fetching comments", err);
-    }
+  const toggleComments = (postId) => {
+    setVisibleComments((prev) => ({
+      ...prev,
+      [postId]: !prev[postId],
+    }));
   };
 
   const handleAddComment = async (postId) => {
@@ -78,10 +72,8 @@ export default function FeedPage() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      const res = await axios.get(`${API_BASE}/getpostcomment/${postId}`);
-
-      setVisibleComments((prev) => ({ ...prev, [postId]: res.data }));
       setCommentInputs((prev) => ({ ...prev, [postId]: "" }));
+      fetchPosts(); // reload posts with updated comments
     } catch (err) {
       console.error("Error adding comment", err.response?.data || err.message);
     }
@@ -98,7 +90,7 @@ export default function FeedPage() {
         <h1 className="logo">SocialFeed</h1>
         <div className="nav-links">
           <a href="/feedpage">Home</a>
-          <a href="/profile">Profile</a>
+          <a href="/profile/:id">Profile</a>
           <button onClick={handleLogout}>Logout</button>
         </div>
       </nav>
@@ -125,7 +117,7 @@ export default function FeedPage() {
         {posts.length > 0 ? (
           posts.map((post) => (
             <div key={post._id} className="post-card">
-              <p className="post-user">{post.user?.username || "Anonymous"}</p>
+              <p className="post-user">{post.user?.name || "Anonymous"}</p>
               <p className="post-text">{post.text}</p>
               {post.image && <img src={post.image} alt="Post" />}
               <div className="post-actions">
@@ -140,10 +132,10 @@ export default function FeedPage() {
 
               {visibleComments[post._id] && (
                 <div className="comments-section">
-                  {visibleComments[post._id].length > 0 ? (
-                    visibleComments[post._id].map((c, idx) => (
+                  {post.comments && post.comments.length > 0 ? (
+                    post.comments.map((c, idx) => (
                       <p key={idx} className="comment">
-                        <strong>{c.user?.username || "User"}:</strong> {c.text}
+                        <strong>{c.user?.name || "Anonymous"}:</strong> {c.text}
                       </p>
                     ))
                   ) : (

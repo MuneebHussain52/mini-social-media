@@ -21,6 +21,8 @@ export default function Login() {
 
       if (res.data.token) {
         localStorage.setItem("token", res.data.token);
+        localStorage.setItem("userId", res.data.id);
+
         Navigate("/feedpage", { replace: true });
       } else {
         alert("No token received from server");

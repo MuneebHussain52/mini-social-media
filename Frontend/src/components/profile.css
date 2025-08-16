@@ -155,3 +155,35 @@
   font-weight: 600;
   color: #0b74de;
 }
+
+/* Profile-specific posts grid */
+.profile-posts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.profile-post-card {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-post-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-post-text-only {
+  padding: 10px;
+  font-size: 14px;
+  text-align: center;
+  color: #333;
+}

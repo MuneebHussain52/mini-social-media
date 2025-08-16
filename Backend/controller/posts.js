@@ -57,29 +57,34 @@ exports.commentpost = async (req, res) => {
   try {
     const { postId } = req.params;
     const { text } = req.body;
-    const post = await Post.findOneAndUpdate(
-      { _id: postId },
+
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({ message: "User not authenticated" });
+    }
+
+    const post = await Post.findByIdAndUpdate(
+      postId,
       {
-        $addToSet: {
+        $push: {
           comments: {
-            $each: text.map((comment) => ({
-              user: req.user._id,
-              text: comment,
-            })),
+            user: req.user._id,
+            text,
           },
         },
-        $inc: { commentCount: text.length },
+        $inc: { commentCount: 1 },
       },
       { new: true }
-    );
+    )
+      .populate("user", "name") // post owner
+      .populate("comments.user", "name"); // comment authors
+
     if (!post) {
-      return res
-        .status(404)
-        .json({ message: "Post not found" })
-        .populate("user", "name");
+      return res.status(404).json({ message: "Post not found" });
     }
-    res.status(200).json({ message: "Comment added successfully" });
+
+    res.status(200).json({ message: "Comment added successfully", post });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Error adding comment", error });
   }
 };
@@ -120,14 +125,13 @@ exports.updatepost = async (req, res) => {
 
 exports.getpost = async (req, res) => {
   try {
-    const { postId } = req.params;
-    const post = await Post.findById(postId);
-    if (!post) {
-      return res.status(404).json({ message: "Post not found" });
-    }
-    res.status(200).json(post);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching post", error });
+    const posts = await Post.find()
+      .populate("user", "username")
+      .populate("comments.user", "username")
+      .sort({ createdAt: -1 });
+    res.json(posts);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching posts", err });
   }
 };
 
@@ -144,10 +148,13 @@ exports.getuserpost = async (req, res) => {
 exports.getpostcomment = async (req, res) => {
   try {
     const { postId } = req.params;
-    const post = await Post.findById(postId);
+
+    const post = await Post.findById(postId).populate("comments.user", "name"); // populate only 'name' of comment user
+
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
+
     res.status(200).json(post.comments);
   } catch (error) {
     res.status(500).json({ message: "Error fetching post comments", error });
@@ -198,20 +205,12 @@ exports.getpostcommentcount = async (req, res) => {
 exports.getprofile = async (req, res) => {
   try {
     const { userId } = req.params;
-    const user = await User.findById(userId).populate("posts");
+    const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    const posts = await Post.find({ user: userId });
-    const userProfile = {
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      posts: posts,
-    };
-    res.status(200).json(userProfile);
+    res.status(200).json(user);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error getting user profile", error });
+    res.status(500).json({ message: "Error fetching user profile", error });
   }
 };
