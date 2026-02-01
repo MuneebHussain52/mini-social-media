@@ -37,25 +37,54 @@ This project was developed to strengthen skills in **React fundamentals**, **Jav
 ## 📂 Project Structure
 
 ```
-mini-social-media/
-│
-├── frontend/
-│ ├── public/
-│ │ └── index.html
-│ └── src/
-│ ├── components/ # Reusable React components
-| ├── pages/ # Pages of the system
-│ ├── App.js # Root component
-│ ├── index.js # Application entry point
-│ └── styles.css # Application styles
-│
-├── backend/
-│ ├── routes/ # API routes
-│ ├── controllers/ # Request handlers
-│ ├── server.js # Express server entry point
-│ └── package.json # Backend dependencies
-│
-├── README.md # Project documentation
+├── 📁 Backend
+│   ├── 📁 config
+│   │   └── 📄 db.js
+│   ├── 📁 controller
+│   │   ├── 📁 auth
+│   │   │   └── 📄 auth.js
+│   │   └── 📄 posts.js
+│   ├── 📁 middleware
+│   │   └── 📄 auth.js
+│   ├── 📁 modal
+│   │   ├── 📄 posts-schema.js
+│   │   └── 📄 user-schema.js
+│   ├── 📁 routes
+│   │   ├── 📄 auth.js
+│   │   ├── 📄 posts.js
+│   │   └── 📄 user.js
+│   ├── 📄 app.js
+│   ├── ⚙️ package-lock.json
+│   └── ⚙️ package.json
+├── 📁 Frontend
+│   ├── 📁 public
+│   │   └── 🖼️ vite.svg
+│   ├── 📁 src
+│   │   ├── 📁 assets
+│   │   │   └── 🖼️ react.svg
+│   │   ├── 📁 components
+│   │   │   ├── 🎨 feedpage.css
+│   │   │   ├── 🎨 login.css
+│   │   │   ├── 🎨 profile.css
+│   │   │   └── 🎨 signup.css
+│   │   ├── 📁 pages
+│   │   │   ├── 📄 feedpage.jsx
+│   │   │   ├── 📄 login.jsx
+│   │   │   ├── 📄 profile.jsx
+│   │   │   └── 📄 signup.jsx
+│   │   ├── 🎨 App.css
+│   │   ├── 📄 App.jsx
+│   │   ├── 🎨 index.css
+│   │   └── 📄 main.jsx
+│   ├── ⚙️ .gitignore
+│   ├── 📝 README.md
+│   ├── 📄 eslint.config.js
+│   ├── 🌐 index.html
+│   ├── ⚙️ package-lock.json
+│   ├── ⚙️ package.json
+│   ├── 📄 tailwind.config.js
+│   └── 📄 vite.config.js
+└── 📝 README.md
 ```
 
 ---
